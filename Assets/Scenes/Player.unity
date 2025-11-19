@@ -319,7 +319,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e25df4180c0e584cb29c4a72f14b78e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  light2D: {fileID: 121994184}
+  visionLight: {fileID: 121994184}
+  originalRadius: 3
+  fullRadius: 50
+  fadeDuration: 0.5
+  fullVisionHoldTime: 1
 --- !u!4 &370565703
 Transform:
   m_ObjectHideFlags: 0
