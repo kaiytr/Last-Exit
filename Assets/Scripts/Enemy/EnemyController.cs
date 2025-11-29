@@ -59,10 +59,13 @@ public class EnemyController : MonoBehaviour
         switch (gameObject.tag)
         {
             case "Wingbat":
-                moveSpeed = 20.0f;
+                moveSpeed = 3.0f;
                 break;
             case "Goblin":
-                moveSpeed = 2.0f;
+                moveSpeed = 1.5f;
+                break;
+            case "Mushroom":
+                moveSpeed = 2.5f;
                 break;
             default:
                 moveSpeed = 2.0f;
