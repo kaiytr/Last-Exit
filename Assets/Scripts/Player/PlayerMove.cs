@@ -9,7 +9,7 @@ public class PlayerMove : MonoBehaviour
     public float speed = 5.0f;
     private Rigidbody2D rb;
     private Vector2 moveDirection;
-    // public Animator animator; // (주석 처리된 채 유지)
+    public Animator animator; // (주석 처리된 채 유지)
 
     // --- 체력 및 부활 관련 변수 ---
     [SerializeField] int maxHealth = 100;
@@ -41,11 +41,12 @@ public class PlayerMove : MonoBehaviour
         }
 
         // ?? 테스트 루틴 시작: 1초마다 데미지를 주기 시작합니다.
-        StartCoroutine(DamageTestRoutine());
+        // StartCoroutine(DamageTestRoutine());
     }
 
     void Update()
-    {
+    { 
+
         if (isDead)
         {
             moveDirection = Vector2.zero;
@@ -57,8 +58,8 @@ public class PlayerMove : MonoBehaviour
         float y = Input.GetAxisRaw("Vertical");
         moveDirection = new Vector2(x, y).normalized;
 
-        // animator.SetInteger("X", (int)x);
-        // animator.SetInteger("Y", (int)y);
+        animator.SetInteger("X", (int)x);
+        animator.SetInteger("Y", (int)y);
 
         if (x != 0)
         {
@@ -68,6 +69,11 @@ public class PlayerMove : MonoBehaviour
                 transform.localScale.y, // Y축 스케일 유지
                 transform.localScale.z  // Z축 스케일 유지
             );
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            animator.SetTrigger("Attack");
         }
     }
 
@@ -151,7 +157,7 @@ public class PlayerMove : MonoBehaviour
     // ==========================================================
     // --- ?? 테스트용: 1초마다 데미지를 주는 코루틴 ---
     // ==========================================================
-    IEnumerator DamageTestRoutine()
+    /*IEnumerator DamageTestRoutine()
     {
         // 게임이 시작되고 끝날 때까지 반복
         while (true)
@@ -165,5 +171,5 @@ public class PlayerMove : MonoBehaviour
                 TakeDamage(damageAmount);
             }
         }
-    }
+    }*/
 }
