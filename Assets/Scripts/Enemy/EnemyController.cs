@@ -1,91 +1,125 @@
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class EnemyController : MonoBehaviour
 {
     [Header("Basic Settings")]
-    private float moveSpeed; // 태그에 따라 자동으로 설정될 속도
-    public float detectionRange = 10f; // 플레이어를 감지할 거리
+    [HideInInspector] private float moveSpeed;
 
-    private Transform playerTarget;
-    private SpriteRenderer spriteRenderer; // 적의 방향 전환을 위해 필요
+    public float detectionRange = 10f;
 
-    void Start()
+    protected Transform playerTarget;
+    private SpriteRenderer spriteRenderer;
+    protected bool isMoving = false;
+
+    private Light2D playerLight2D;
+
+    [Header("Health Settings (Base)")]
+    [HideInInspector]
+    public int maxHealth = 10;
+    protected int currentHealth;
+    protected bool isDead = false;
+
+    private const int CONTACT_DAMAGE = 5;
+
+    protected void Start()
     {
-        // 1. 플레이어 찾기 (Player 태그가 붙은 오브젝트를 찾음)
+        currentHealth = maxHealth;
+        isDead = false;
+
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null)
         {
             playerTarget = playerObj.transform;
+            playerLight2D = playerObj.GetComponent<Light2D>();
         }
 
-        // 2. SpriteRenderer 컴포넌트 가져오기 (이미지 좌우 반전을 위해)
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        if (playerLight2D != null)
+        {
+            detectionRange = playerLight2D.pointLightOuterRadius;
+        }
 
-        // 3. 자신의 태그에 따라 이동 속도 설정 (여기서 4종류 구분)
+        spriteRenderer = GetComponent<SpriteRenderer>();
         SetSpeedByTag();
     }
 
-    void Update()
+    void Update() { }
+
+    void FixedUpdate()
     {
-        if (playerTarget == null) return;
-
-        // 플레이어와 적 사이의 거리 계산
-        float distanceToPlayer = Vector2.Distance(transform.position, playerTarget.position);
-
-        // 감지 범위 안에 들어왔을 때만 추적
-        if (distanceToPlayer <= detectionRange)
+        if (playerTarget != null && isMoving && !isDead)
         {
             FollowPlayer();
             LookAtPlayer();
         }
     }
 
-    // 태그별 속도 설정 로직 (핵심 부분)
     void SetSpeedByTag()
     {
         switch (gameObject.tag)
         {
             case "Wingbat":
-                moveSpeed = 3.0f; // 날아다니므로 가장 빠름
+                moveSpeed = 20.0f;
                 break;
             case "Goblin":
-                moveSpeed = 2.0f; // 민첩함
-                break;
-            case "Mushroom":
-                moveSpeed = 1.5f; // 보통 속도
-                break;
-            case "Skeleton":
-                moveSpeed = 1.0f; // 아주 느림
+                moveSpeed = 2.0f;
                 break;
             default:
-                moveSpeed = 2.0f; // 태그가 없을 경우 기본 속도
-                Debug.Log($"태그가 설정되지 않았거나 알 수 없는 태그입니다: {gameObject.tag}");
+                moveSpeed = 2.0f;
                 break;
         }
     }
 
-    // 플레이어 추적 로직
     void FollowPlayer()
     {
-        // 현재 위치에서 플레이어 위치로 moveSpeed 속도로 이동
         transform.position = Vector2.MoveTowards(transform.position, playerTarget.position, moveSpeed * Time.deltaTime);
     }
 
-    // 플레이어 바라보기 (좌우 반전)
     void LookAtPlayer()
     {
         if (spriteRenderer != null)
         {
-            // 플레이어가 오른쪽에 있으면 flipX = false (원본), 왼쪽에 있으면 true (반전)
-            // (스프라이트가 기본적으로 오른쪽을 보고 있다고 가정)
-            if (playerTarget.position.x > transform.position.x)
+            spriteRenderer.flipX = (playerTarget.position.x < transform.position.x);
+        }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        if (isDead) return;
+
+        currentHealth -= damage;
+        Debug.Log($"{gameObject.name} Health: {currentHealth}");
+
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (isDead) return;
+
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            var playerHealth = collision.gameObject.GetComponent<PlayerMove>();
+
+            if (playerHealth != null)
             {
-                spriteRenderer.flipX = false;
-            }
-            else
-            {
-                spriteRenderer.flipX = true;
+                playerHealth.TakeDamage(CONTACT_DAMAGE);
             }
         }
+    }
+
+    protected virtual void Die()
+    {
+        if (isDead) return;
+        isDead = true;
+        isMoving = false;
+
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null) col.enabled = false;
+
+        Debug.Log($"{gameObject.name} died.");
     }
 }
