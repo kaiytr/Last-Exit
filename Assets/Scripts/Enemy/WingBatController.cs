@@ -1,32 +1,36 @@
 using UnityEngine;
+using System.Collections;
 
-public class WingbatController : EnemyController
+public class WingBatController : EnemyController
 {
-    [Header("Health Settings")]
-    public int WingbatMaxHealth = 20;
+    [Header("WingBat Settings")]
+    public int WingBatMaxHealth = 25;
+    public float attackCooldown = 3.0f;
 
-    [Header("Wingbat Attack Settings")]
-    public float attackCooldown = 5.0f;
     private float nextAttackTime = 0f;
-
     private Animator animator;
 
-    private const float SPEED_REDUCTION = 3.0f;
+    private const int WINGBAT_ATTACK_DAMAGE = 8;
+    private const int ATTACK_INCREASE_AMOUNT = 2;
 
-    private const string PARAM_IS_RUNNING = "IsRunning";
+    private const string PARAM_IS_FLYING = "IsFlying"; // WingBatï¿½ï¿½ IsRunning ï¿½ï¿½ï¿½ IsFlying ï¿½ï¿½ï¿½
     private const string PARAM_ATTACK = "Attack";
     private const string PARAM_DIE = "Die";
 
-    new void Start()
+    private Vector2 moveDirection;
+    private Rigidbody2D rb;
+
+    void Start()
     {
-        maxHealth = WingbatMaxHealth;
+        rb = GetComponent<Rigidbody2D>();
+        maxHealth = WingBatMaxHealth;
         base.Start();
         animator = GetComponent<Animator>();
         nextAttackTime = 0f;
 
         if (animator == null)
         {
-            Debug.LogError("Animator ÄÄÆ÷³ÍÆ®°¡ Wingbat ¿ÀºêÁ§Æ®¿¡ ¾ø½À´Ï´Ù!");
+            Debug.LogError("Animator ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ WingBat ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½!");
         }
     }
 
@@ -50,22 +54,62 @@ public class WingbatController : EnemyController
         }
     }
 
+    void FixedUpdate()
+    {
+        if (isDead || !isMoving)
+        {
+            rb.linearVelocity = Vector2.zero;
+        }
+        else
+        {
+            rb.linearVelocity = moveDirection * moveSpeed;
+        }
+    }
+
     private void HandleEngage()
     {
-        animator.SetBool(PARAM_IS_RUNNING, true);
-        isMoving = true;
+        bool isAttacking = animator.GetCurrentAnimatorStateInfo(0).IsName("WingBat_Attack");
 
-        if (Time.time >= nextAttackTime)
+        if (Time.time >= nextAttackTime && !isAttacking)
         {
             animator.SetTrigger(PARAM_ATTACK);
             nextAttackTime = Time.time + attackCooldown;
+        }
+
+        if (!isAttacking)
+        {
+            // ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+            Vector2 targetDirection = (playerTarget.position - transform.position).normalized;
+            moveDirection = targetDirection;
+
+            // ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½Ù¶óº¸±ï¿½ (ï¿½Â¿ï¿½ ï¿½ï¿½ï¿½ï¿½)
+            float targetScaleX = Mathf.Abs(transform.localScale.x);
+            if (targetDirection.x < 0)
+            {
+                targetScaleX = Mathf.Abs(transform.localScale.x);
+            }
+            else if (targetDirection.x > 0)
+            {
+                targetScaleX = -Mathf.Abs(transform.localScale.x);
+            }
+            transform.localScale = new Vector3(targetScaleX, transform.localScale.y, transform.localScale.z);
+
+            animator.SetBool(PARAM_IS_FLYING, true);
+            isMoving = true;
+        }
+        else
+        {
+            animator.SetBool(PARAM_IS_FLYING, false);
+            isMoving = false;
+            moveDirection = Vector2.zero;
         }
     }
 
     private void HandleIdle()
     {
-        animator.SetBool(PARAM_IS_RUNNING, false);
+        animator.SetBool(PARAM_IS_FLYING, false);
         isMoving = false;
+        moveDirection = Vector2.zero;
     }
 
     public void AttackDamageEvent()
@@ -79,14 +123,11 @@ public class WingbatController : EnemyController
         {
             if (hit.CompareTag("Player"))
             {
-                var playerMove = hit.GetComponent<PlayerMove>();
+                var playerHealth = hit.GetComponent<PlayerMove>();
 
-                if (playerMove != null)
+                if (playerHealth != null)
                 {
-                    playerMove.speed -= SPEED_REDUCTION;
-                    if (playerMove.speed < 0) playerMove.speed = 0;
-
-                    Debug.Log($"¹ÚÁã °ø°Ý! ÇÃ·¹ÀÌ¾î ¼Óµµ {SPEED_REDUCTION} °¨¼Ò. ÇöÀç ¼Óµµ: {playerMove.speed}");
+                    playerHealth.TakeDamage(WINGBAT_ATTACK_DAMAGE);
                     return;
                 }
             }
@@ -96,13 +137,14 @@ public class WingbatController : EnemyController
     protected override void Die()
     {
         if (isDead) return;
+
+        PlayerMove player = FindObjectOfType<PlayerMove>();
+        if (player != null)
+        {
+            player.IncreaseAttackPower(ATTACK_INCREASE_AMOUNT);
+        }
+
         base.Die();
-
         animator.SetTrigger(PARAM_DIE);
-    }
-
-    public void DestroyObjectEvent()
-    {
-        Destroy(gameObject);
     }
 }

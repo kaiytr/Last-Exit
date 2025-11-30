@@ -1,25 +1,30 @@
-using UnityEngine;
+Ôªøusing UnityEngine;
 using System.Collections;
 
 public class MushroomController : EnemyController
 {
-    [Header("Health Settings")]
+    [Header("Mushroom Settings")]
     public int MushroomMaxHealth = 30;
-
-    [Header("Attack Cooldown")]
     public float attackCooldown = 3.0f;
     private float nextAttackTime = 0f;
-
     private Animator animator;
 
     private const int ATTACK_DAMAGE = 10;
+    private const int ATTACK_INCREASE_AMOUNT = 3;
 
     private const string PARAM_IS_RUNNING = "IsRunning";
     private const string PARAM_ATTACK = "Attack";
     private const string PARAM_DIE = "Die";
 
+    // ‚ö°Ô∏è Ïù¥Îèô Î°úÏßÅ Î≥ÄÏàò Ï∂îÍ∞Ä
+    private Vector2 moveDirection;
+    private Rigidbody2D rb;
+
     void Start()
     {
+        // ‚ö°Ô∏è Rigidbody Ï¥àÍ∏∞Ìôî
+        rb = GetComponent<Rigidbody2D>();
+
         maxHealth = MushroomMaxHealth;
         base.Start();
         animator = GetComponent<Animator>();
@@ -27,7 +32,7 @@ public class MushroomController : EnemyController
 
         if (animator == null)
         {
-            Debug.LogError("Animator ƒƒ∆˜≥Õ∆Æ∞° Mushroom ø¿∫Í¡ß∆Æø° æ¯Ω¿¥œ¥Ÿ!");
+            Debug.LogError("Animator Ïª¥Ìè¨ÎÑåÌä∏Í∞Ä Mushroom Ïò§Î∏åÏ†ùÌä∏Ïóê ÏóÜÏäµÎãàÎã§!");
         }
     }
 
@@ -51,26 +56,64 @@ public class MushroomController : EnemyController
         }
     }
 
+    // ‚ö°Ô∏è Ïã§Ï†ú Ïù¥Îèô Ï≤òÎ¶¨
+    void FixedUpdate()
+    {
+        if (isDead || !isMoving)
+        {
+            if (rb != null) rb.linearVelocity = Vector2.zero;
+        }
+        else
+        {
+            if (rb != null) rb.linearVelocity = moveDirection * moveSpeed;
+        }
+    }
+
     private void HandleEngage()
     {
-        // 1. ¿Ãµø ªÛ≈¬ ¿Ø¡ˆ
-        animator.SetBool(PARAM_IS_RUNNING, true);
-        isMoving = true;
+        bool isAttacking = animator.GetCurrentAnimatorStateInfo(0).IsName("Mushroomm_Attack");
 
-        // 2. ∞¯∞› ¡∂∞« √º≈© π◊ πﬂµø
-        if (Time.time >= nextAttackTime)
+        if (Time.time >= nextAttackTime && !isAttacking)
         {
             animator.SetTrigger(PARAM_ATTACK);
             nextAttackTime = Time.time + attackCooldown;
-            // Run ªÛ≈¬∏¶ ≤Ù¥¬ ƒ⁄µÂ∏¶ ≥÷¡ˆ æ Ω¿¥œ¥Ÿ.
+        }
+
+        if (!isAttacking)
+        {
+            // ‚ö°Ô∏è Ïù¥Îèô Î∞©Ìñ• Í≥ÑÏÇ∞ Î∞è Ï¢åÏö∞ Î∞òÏ†Ñ (Î¨∏ÏõåÌÅ¨ ÏàòÏ†ï)
+            Vector2 targetDirection = (playerTarget.position - transform.position).normalized;
+            moveDirection = targetDirection;
+
+            float targetScaleX = Mathf.Abs(transform.localScale.x);
+
+            if (moveDirection.x > 0.01f)
+            {
+                targetScaleX = -targetScaleX;
+            }
+            else if (moveDirection.x < -0.01f)
+            {
+                targetScaleX = Mathf.Abs(transform.localScale.x);
+            }
+
+            transform.localScale = new Vector3(targetScaleX, transform.localScale.y, transform.localScale.z);
+
+            animator.SetBool(PARAM_IS_RUNNING, true);
+            isMoving = true;
+        }
+        else
+        {
+            animator.SetBool(PARAM_IS_RUNNING, false);
+            isMoving = false;
+            moveDirection = Vector2.zero;
         }
     }
 
     private void HandleIdle()
     {
-        // Idle ªÛ≈¬¿œ ∂ß∏∏ Run¿ª False∑Œ ≤¸¥œ¥Ÿ.
         animator.SetBool(PARAM_IS_RUNNING, false);
         isMoving = false;
+        moveDirection = Vector2.zero;
     }
 
     public void AttackDamageEvent()
@@ -98,8 +141,15 @@ public class MushroomController : EnemyController
     protected override void Die()
     {
         if (isDead) return;
-        base.Die();
 
+        PlayerMove player = FindObjectOfType<PlayerMove>();
+
+        if (player != null)
+        {
+            player.IncreaseAttackPower(ATTACK_INCREASE_AMOUNT);
+        }
+
+        base.Die();
         animator.SetTrigger(PARAM_DIE);
     }
 
