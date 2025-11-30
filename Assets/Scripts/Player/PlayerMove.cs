@@ -19,6 +19,9 @@ public class PlayerMove : MonoBehaviour
     public float damageInterval = 1f;
     public int damageAmount = 20;
 
+    private int lastX = 0;
+    private int lastY = -1;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -45,14 +48,42 @@ public class PlayerMove : MonoBehaviour
 
         if (animator != null)
         {
-            animator.SetInteger("X", (int)x);
-            animator.SetInteger("Y", (int)y);
+            if (x != 0)
+            {
+                animator.SetInteger("X", 1);
+                animator.SetInteger("Y", 0);
+                lastX = (int)Mathf.Sign(x);
+                lastY = 0;
+            }
+            else if (y != 0)
+            {
+                animator.SetInteger("X", 0);
+                animator.SetInteger("Y", (int)Mathf.Sign(y));
+                lastX = 0;
+                lastY = (int)Mathf.Sign(y);
+            }
+            else
+            {
+                animator.SetInteger("X", 0);
+                animator.SetInteger("Y", 0);
+            }
         }
 
         if (x != 0)
         {
+            float targetScaleX = Mathf.Abs(transform.localScale.x);
+
+            if (x > 0)
+            {
+                targetScaleX = -targetScaleX;
+            }
+            else
+            {
+                targetScaleX = Mathf.Abs(transform.localScale.x);
+            }
+
             transform.localScale = new Vector3(
-                -x * Mathf.Abs(transform.localScale.x),
+                targetScaleX,
                 transform.localScale.y,
                 transform.localScale.z
             );
@@ -60,7 +91,21 @@ public class PlayerMove : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0) && animator != null)
         {
-            animator.SetTrigger("Attack");
+            if (lastX != 0)
+            {
+                animator.SetInteger("X", 1);
+                animator.SetInteger("Y", 0);
+            }
+            else if (lastY != 0)
+            {
+                animator.SetInteger("X", 0);
+                animator.SetInteger("Y", lastY);
+            }
+
+            if (lastX != 0 || lastY != 0)
+            {
+                animator.SetTrigger("Attack");
+            }
         }
     }
 
