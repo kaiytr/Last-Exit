@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class MushroomController : EnemyController
 {
@@ -17,7 +18,7 @@ public class MushroomController : EnemyController
     private const string PARAM_ATTACK = "Attack";
     private const string PARAM_DIE = "Die";
 
-    new void Start()
+    void Start()
     {
         maxHealth = MushroomMaxHealth;
         base.Start();
@@ -52,18 +53,22 @@ public class MushroomController : EnemyController
 
     private void HandleEngage()
     {
+        // 1. 이동 상태 유지
         animator.SetBool(PARAM_IS_RUNNING, true);
         isMoving = true;
 
+        // 2. 공격 조건 체크 및 발동
         if (Time.time >= nextAttackTime)
         {
             animator.SetTrigger(PARAM_ATTACK);
             nextAttackTime = Time.time + attackCooldown;
+            // Run 상태를 끄는 코드를 넣지 않습니다.
         }
     }
 
     private void HandleIdle()
     {
+        // Idle 상태일 때만 Run을 False로 끕니다.
         animator.SetBool(PARAM_IS_RUNNING, false);
         isMoving = false;
     }
