@@ -1,17 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GoblinController : EnemyController
+public class SkeletonController : EnemyController
 {
-    [Header("Goblin Settings")]
-    public int GoblinMaxHealth = 40;
-    public float attackCooldown = 2.0f;
+    [Header("Skeleton Settings")]
+    public int SkeletonMaxHealth = 50;
+    public float attackCooldown = 2.5f;
 
     private float nextAttackTime = 0f;
     private Animator animator;
 
-    private const int GOBLIN_ATTACK_DAMAGE = 12;
-    private const int ATTACK_INCREASE_AMOUNT = 4; // 처치 시 공격력 +4
+    private const int SKELETON_ATTACK_DAMAGE = 15;
+    private const int ATTACK_INCREASE_AMOUNT = 5;
 
     private const string PARAM_IS_RUNNING = "IsRunning";
     private const string PARAM_ATTACK = "Attack";
@@ -26,14 +26,14 @@ public class GoblinController : EnemyController
         // ⚡️ Rigidbody 초기화
         rb = GetComponent<Rigidbody2D>();
 
-        maxHealth = GoblinMaxHealth;
+        maxHealth = SkeletonMaxHealth;
         base.Start();
         animator = GetComponent<Animator>();
         nextAttackTime = 0f;
 
         if (animator == null)
         {
-            Debug.LogError("Animator 컴포넌트가 Goblin 오브젝트에 없습니다!");
+            Debug.LogError("Animator 컴포넌트가 Skeleton 오브젝트에 없습니다!");
         }
     }
 
@@ -62,17 +62,17 @@ public class GoblinController : EnemyController
     {
         if (isDead || !isMoving)
         {
-            if (rb != null) rb.linearVelocity = Vector2.zero;
+            if (rb != null) rb.velocity = Vector2.zero;
         }
         else
         {
-            if (rb != null) rb.linearVelocity = moveDirection * moveSpeed;
+            if (rb != null) rb.velocity = moveDirection * moveSpeed;
         }
     }
 
     private void HandleEngage()
     {
-        bool isAttacking = animator.GetCurrentAnimatorStateInfo(0).IsName("Goblin_Attack");
+        bool isAttacking = animator.GetCurrentAnimatorStateInfo(0).IsName("Skeleton_Attack");
 
         if (Time.time >= nextAttackTime && !isAttacking)
         {
@@ -82,19 +82,16 @@ public class GoblinController : EnemyController
 
         if (!isAttacking)
         {
-            // ⚡️ 이동 방향 계산
+            // ⚡️ 이동 방향 계산 및 좌우 반전 (문워크 수정)
             Vector2 targetDirection = (playerTarget.position - transform.position).normalized;
             moveDirection = targetDirection;
 
-            // ⚡️ 좌우 반전 로직 (문워크 수정)
             float targetScaleX = Mathf.Abs(transform.localScale.x);
 
-            // 몬스터가 오른쪽으로 이동할 때 (moveDirection.x > 0), 스프라이트 반전
             if (moveDirection.x > 0.01f)
             {
                 targetScaleX = -targetScaleX;
             }
-            // 몬스터가 왼쪽으로 이동할 때 (moveDirection.x < 0), 스프라이트 정방향
             else if (moveDirection.x < -0.01f)
             {
                 targetScaleX = Mathf.Abs(transform.localScale.x);
@@ -109,7 +106,7 @@ public class GoblinController : EnemyController
         {
             animator.SetBool(PARAM_IS_RUNNING, false);
             isMoving = false;
-            moveDirection = Vector2.zero; // 공격 중 이동 멈춤
+            moveDirection = Vector2.zero;
         }
     }
 
@@ -117,7 +114,7 @@ public class GoblinController : EnemyController
     {
         animator.SetBool(PARAM_IS_RUNNING, false);
         isMoving = false;
-        moveDirection = Vector2.zero; // 대기 중 이동 멈춤
+        moveDirection = Vector2.zero;
     }
 
     public void AttackDamageEvent()
@@ -135,7 +132,7 @@ public class GoblinController : EnemyController
 
                 if (playerHealth != null)
                 {
-                    playerHealth.TakeDamage(GOBLIN_ATTACK_DAMAGE);
+                    playerHealth.TakeDamage(SKELETON_ATTACK_DAMAGE);
                     return;
                 }
             }

@@ -5,6 +5,7 @@ using System.Collections;
 public class PlayerMove : MonoBehaviour
 {
     public float speed = 10.0f;
+    private float baseSpeed;
     private Rigidbody2D rb;
     private Vector2 moveDirection;
     public Animator animator;
@@ -19,6 +20,12 @@ public class PlayerMove : MonoBehaviour
     public float damageInterval = 1f;
     public int damageAmount = 20;
 
+    [Header("Player Attack Settings")]
+    public float attackRange = 1.0f;
+    public LayerMask enemyLayer;
+
+    private int currentAttackDamage = 5;
+
     private int lastX = 0;
     private int lastY = -1;
 
@@ -27,6 +34,8 @@ public class PlayerMove : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         currentHealth = maxHealth;
         isDead = false;
+        currentAttackDamage = 5;
+        baseSpeed = speed;
 
         if (currentCheckpoint != null)
         {
@@ -121,6 +130,27 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
+    public void PlayerAttackEvent()
+    {
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(transform.position, attackRange, enemyLayer);
+
+        foreach (Collider2D enemy in hitEnemies)
+        {
+            EnemyController enemyHealth = enemy.GetComponent<EnemyController>();
+
+            if (enemyHealth != null)
+            {
+                enemyHealth.TakeDamage(currentAttackDamage);
+            }
+        }
+    }
+
+    public void IncreaseAttackPower(int amount)
+    {
+        currentAttackDamage += amount;
+        Debug.Log($"플레이어 공격력이 {amount} 증가! 현재 공격력: {currentAttackDamage}");
+    }
+
     public void TakeDamage(int damage)
     {
         if (isDead) return;
@@ -157,7 +187,7 @@ public class PlayerMove : MonoBehaviour
 
         transform.position = currentCheckpoint.position;
         currentHealth = maxHealth;
-        speed = 10.0f;
+        speed = baseSpeed;
         isDead = false;
         rb.linearVelocity = Vector2.zero;
     }
