@@ -43,8 +43,6 @@ public class EnemyController : MonoBehaviour
 
     protected virtual void Die()
     {
-        if (isDead) return;
-
         isDead = true;
 
         // 사망 시 충돌 비활성화

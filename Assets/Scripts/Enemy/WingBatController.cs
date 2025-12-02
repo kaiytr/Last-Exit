@@ -136,7 +136,9 @@ public class WingBatController : EnemyController
 
     protected override void Die()
     {
+        Debug.Log("WingBat died 1");
         if (isDead) return;
+        base.Die();
 
         PlayerMove player = FindObjectOfType<PlayerMove>();
         if (player != null)
@@ -144,7 +146,12 @@ public class WingBatController : EnemyController
             player.IncreaseAttackPower(ATTACK_INCREASE_AMOUNT);
         }
 
-        base.Die();
         animator.SetTrigger(PARAM_DIE);
+        Debug.Log("WingBat died 2");  
+    }
+
+    public void DestroyObjectEvent()
+    {
+        Destroy(gameObject);
     }
 }

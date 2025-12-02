@@ -132,7 +132,7 @@ public class GoblinController : EnemyController
             if (hit.CompareTag("Player"))
             {
                 var playerHealth = hit.GetComponent<PlayerMove>();
-
+                Debug.Log("Player hit");
                 if (playerHealth != null)
                 {
                     playerHealth.TakeDamage(GOBLIN_ATTACK_DAMAGE);
@@ -145,6 +145,7 @@ public class GoblinController : EnemyController
     protected override void Die()
     {
         if (isDead) return;
+        base.Die();
 
         PlayerMove player = FindObjectOfType<PlayerMove>();
         if (player != null)
@@ -152,8 +153,8 @@ public class GoblinController : EnemyController
             player.IncreaseAttackPower(ATTACK_INCREASE_AMOUNT);
         }
 
-        base.Die();
         animator.SetTrigger(PARAM_DIE);
+        Debug.Log("Goblin Died");
     }
 
     public void DestroyObjectEvent()

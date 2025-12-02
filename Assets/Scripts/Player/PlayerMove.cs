@@ -136,6 +136,7 @@ public class PlayerMove : MonoBehaviour
 
         foreach (Collider2D enemy in hitEnemies)
         {
+            Debug.Log("Enemy : " + enemy.name + " hit by player.");
             EnemyController enemyHealth = enemy.GetComponent<EnemyController>();
 
             if (enemyHealth != null)
