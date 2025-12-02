@@ -134,24 +134,5 @@ public class WingBatController : EnemyController
         }
     }
 
-    protected override void Die()
-    {
-        Debug.Log("WingBat died 1");
-        if (isDead) return;
-        base.Die();
-
-        PlayerMove player = FindObjectOfType<PlayerMove>();
-        if (player != null)
-        {
-            player.IncreaseAttackPower(ATTACK_INCREASE_AMOUNT);
-        }
-
-        animator.SetTrigger(PARAM_DIE);
-        Debug.Log("WingBat died 2");  
-    }
-
-    public void DestroyObjectEvent()
-    {
-        Destroy(gameObject);
-    }
+   
 }

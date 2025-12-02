@@ -8,10 +8,9 @@ using UnityEngine.UIElements;
 public class DialogClass
 {
     public string Name;
-
     [TextArea]
-    public string Dialogs;
-    public float coolTime;
+    public string Dialog;
+   // public float coolTime;
 
 }
 [Serializable]
