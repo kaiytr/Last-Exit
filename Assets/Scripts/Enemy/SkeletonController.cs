@@ -62,11 +62,11 @@ public class SkeletonController : EnemyController
     {
         if (isDead || !isMoving)
         {
-            if (rb != null) rb.velocity = Vector2.zero;
+            if (rb != null) rb.linearVelocity = Vector2.zero;
         }
         else
         {
-            if (rb != null) rb.velocity = moveDirection * moveSpeed;
+            if (rb != null) rb.linearVelocity = moveDirection * moveSpeed;
         }
     }
 
@@ -143,14 +143,15 @@ public class SkeletonController : EnemyController
     {
         if (isDead) return;
 
+         base.Die();
         PlayerMove player = FindObjectOfType<PlayerMove>();
         if (player != null)
         {
             player.IncreaseAttackPower(ATTACK_INCREASE_AMOUNT);
         }
 
-        base.Die();
         animator.SetTrigger(PARAM_DIE);
+        Debug.Log("Skeleton died"); 
     }
 
     public void DestroyObjectEvent()

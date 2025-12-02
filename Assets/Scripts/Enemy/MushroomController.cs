@@ -81,7 +81,7 @@ public class MushroomController : EnemyController
 
         if (!isAttacking)
         {
-            // ⚡️ 이동 방향 계산 및 좌우 반전 (문워크 수정)
+            // 이동 방향 계산 및 좌우 반전 (문워크 수정)
             Vector2 targetDirection = (playerTarget.position - transform.position).normalized;
             moveDirection = targetDirection;
 
@@ -142,6 +142,8 @@ public class MushroomController : EnemyController
     {
         if (isDead) return;
 
+        base.Die();
+
         PlayerMove player = FindObjectOfType<PlayerMove>();
 
         if (player != null)
@@ -149,8 +151,8 @@ public class MushroomController : EnemyController
             player.IncreaseAttackPower(ATTACK_INCREASE_AMOUNT);
         }
 
-        base.Die();
         animator.SetTrigger(PARAM_DIE);
+        Debug.Log("Mushroom died");
     }
 
     public void DestroyObjectEvent()
