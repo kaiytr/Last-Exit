@@ -139,23 +139,5 @@ public class SkeletonController : EnemyController
         }
     }
 
-    protected override void Die()
-    {
-        if (isDead) return;
-
-         base.Die();
-        PlayerMove player = FindObjectOfType<PlayerMove>();
-        if (player != null)
-        {
-            player.IncreaseAttackPower(ATTACK_INCREASE_AMOUNT);
-        }
-
-        animator.SetTrigger(PARAM_DIE);
-        Debug.Log("Skeleton died"); 
-    }
-
-    public void DestroyObjectEvent()
-    {
-        Destroy(gameObject);
-    }
+   
 }

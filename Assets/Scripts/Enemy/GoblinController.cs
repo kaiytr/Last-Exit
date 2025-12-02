@@ -11,11 +11,9 @@ public class GoblinController : EnemyController
     private Animator animator;
 
     private const int GOBLIN_ATTACK_DAMAGE = 12;
-    private const int ATTACK_INCREASE_AMOUNT = 4; // 처치 시 공격력 +4
 
     private const string PARAM_IS_RUNNING = "IsRunning";
     private const string PARAM_ATTACK = "Attack";
-    private const string PARAM_DIE = "Die";
 
     // ⚡️ 이동 로직 변수 추가
     private Vector2 moveDirection;
@@ -140,25 +138,5 @@ public class GoblinController : EnemyController
                 }
             }
         }
-    }
-
-    protected override void Die()
-    {
-        if (isDead) return;
-        base.Die();
-
-        PlayerMove player = FindObjectOfType<PlayerMove>();
-        if (player != null)
-        {
-            player.IncreaseAttackPower(ATTACK_INCREASE_AMOUNT);
-        }
-
-        animator.SetTrigger(PARAM_DIE);
-        Debug.Log("Goblin Died");
-    }
-
-    public void DestroyObjectEvent()
-    {
-        Destroy(gameObject);
     }
 }

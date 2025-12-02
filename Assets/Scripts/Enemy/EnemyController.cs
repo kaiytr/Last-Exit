@@ -12,6 +12,9 @@ public class EnemyController : MonoBehaviour
     protected Transform playerTarget;
     protected bool isMoving = false;
 
+    private const int ATTACK_INCREASE_AMOUNT = 4; // 처치 시 공격력 +4
+    private const string PARAM_DIE = "Die";
+
     protected void Start()
     {
         currentHealth = maxHealth;
@@ -37,11 +40,11 @@ public class EnemyController : MonoBehaviour
         if (currentHealth <= 0)
         {
             currentHealth = 0;
-            Die();
+            this.Die();
         }
     }
 
-    protected virtual void Die()
+    protected void Die()
     {
         isDead = true;
 
@@ -51,6 +54,13 @@ public class EnemyController : MonoBehaviour
         {
             col.enabled = false;
         }
+        PlayerMove player = FindObjectOfType<PlayerMove>();
+        if (player != null)
+        {
+            player.IncreaseAttackPower(ATTACK_INCREASE_AMOUNT);
+        }
+
+        GetComponent<Animator>().SetTrigger(PARAM_DIE);
     }
 
     public void DestroyObjectEvent()
