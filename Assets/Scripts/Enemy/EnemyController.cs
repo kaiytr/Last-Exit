@@ -12,7 +12,6 @@ public class EnemyController : MonoBehaviour
     protected Transform playerTarget;
     protected bool isMoving = false;
 
-    private const int ATTACK_INCREASE_AMOUNT = 4; // 처치 시 공격력 +4
     private const string PARAM_DIE = "Die";
 
     protected void Start()
@@ -46,6 +45,8 @@ public class EnemyController : MonoBehaviour
 
     protected void Die()
     {
+        if (isDead) return;
+
         isDead = true;
 
         // 사망 시 충돌 비활성화
@@ -54,13 +55,40 @@ public class EnemyController : MonoBehaviour
         {
             col.enabled = false;
         }
+
         PlayerMove player = FindObjectOfType<PlayerMove>();
+
         if (player != null)
         {
-            player.IncreaseAttackPower(ATTACK_INCREASE_AMOUNT);
+            int increaseAmount = GetAttackIncreaseAmountByTag(gameObject.tag);
+            player.IncreaseAttackPower(increaseAmount);
         }
 
-        GetComponent<Animator>().SetTrigger(PARAM_DIE);
+        // Animator 컴포넌트가 없을 수 있으므로 예외 처리
+        Animator anim = GetComponent<Animator>();
+        if (anim != null)
+        {
+            anim.SetTrigger(PARAM_DIE);
+        }
+    }
+
+   
+    private int GetAttackIncreaseAmountByTag(string tag)
+    {
+        switch (tag)
+        {
+            case "WingBat": // WingBat 태그를 가진 적을 잡았을 때
+                return 2;
+            case "Mushroom": // Mushroom 태그를 가진 적을 잡았을 때
+                return 3;
+            case "Goblin": // Goblin 태그를 가진 적을 잡았을 때
+                return 4;
+            case "Skeleton": // Skeleton 태그를 가진 적을 잡았을 때
+                return 5;
+            default:
+                Debug.LogWarning($"EnemyController: 알 수 없는 태그 '{tag}'입니다. 기본값 0을 적용합니다.");
+                return 0;
+        }
     }
 
     public void DestroyObjectEvent()
