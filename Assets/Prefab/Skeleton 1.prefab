@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 4566700211348054884}
   - component: {fileID: 61017310541769099}
   - component: {fileID: 1247203339625297050}
-  - component: {fileID: 1378822004652875024}
   - component: {fileID: 5508510048492655109}
   - component: {fileID: 1386329265459875642}
   m_Layer: 0
@@ -131,21 +130,6 @@ MonoBehaviour:
   moveSpeed: 3
   SkeletonMaxHealth: 50
   attackCooldown: 2.5
---- !u!114 &1378822004652875024
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8252881230695721316}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7ae0b983c50fd5646959729d58760dba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 10
-  detectionRange: 10
-  moveSpeed: 3
 --- !u!70 &5508510048492655109
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

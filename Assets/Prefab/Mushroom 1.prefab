@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 460789786629289600}
   - component: {fileID: 2897867766427292838}
   - component: {fileID: 7625133460810026871}
-  - component: {fileID: 3672954074741774232}
   - component: {fileID: -992457652893144777}
   - component: {fileID: 3580319603263343807}
   m_Layer: 0
@@ -131,21 +130,6 @@ MonoBehaviour:
   moveSpeed: 3
   MushroomMaxHealth: 30
   attackCooldown: 3
---- !u!114 &3672954074741774232
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6872378727500779260}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7ae0b983c50fd5646959729d58760dba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 10
-  detectionRange: 10
-  moveSpeed: 3
 --- !u!50 &-992457652893144777
 Rigidbody2D:
   serializedVersion: 5
@@ -172,7 +156,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!70 &3580319603263343807
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
