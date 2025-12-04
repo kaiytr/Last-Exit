@@ -149,7 +149,7 @@ public class PlayerMove : MonoBehaviour
     public void IncreaseAttackPower(int amount)
     {
         currentAttackDamage += amount;
-        Debug.Log($"ÇÃ·¹ÀÌ¾î °ø°İ·ÂÀÌ {amount} Áõ°¡! ÇöÀç °ø°İ·Â: {currentAttackDamage}");
+        Debug.Log($"í”Œë ˆì´ì–´ ê³µê²©ë ¥ì´ {amount} ì¦ê°€! í˜„ì¬ ê³µê²©ë ¥: {currentAttackDamage}");
     }
 
     public void TakeDamage(int damage)

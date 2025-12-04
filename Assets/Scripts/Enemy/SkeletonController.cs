@@ -11,11 +11,11 @@ public class SkeletonController : EnemyController
     private Animator animator;
 
     private const int SKELETON_ATTACK_DAMAGE = 15;
-    private const int ATTACK_INCREASE_AMOUNT = 5;
+    // ⚠️ ATTACK_INCREASE_AMOUNT 제거: 베이스 클래스(EnemyController)의 GetAttackIncreaseAmountByTag()가 처리합니다.
 
     private const string PARAM_IS_RUNNING = "IsRunning";
     private const string PARAM_ATTACK = "Attack";
-    private const string PARAM_DIE = "Die";
+    private const string PARAM_DIE = "Die"; // 베이스 클래스로 이동했지만, 애니메이션 트리거를 위해 남겨둡니다.
 
     // ⚡️ 이동 로직 변수 추가
     private Vector2 moveDirection;
@@ -57,7 +57,7 @@ public class SkeletonController : EnemyController
         }
     }
 
-    // ⚡️ 실제 이동 처리
+    // ⚡️ 문워크 해결: rb.linearVelocity 대신 rb.velocity 사용
     void FixedUpdate()
     {
         if (isDead || !isMoving)
@@ -82,10 +82,11 @@ public class SkeletonController : EnemyController
 
         if (!isAttacking)
         {
-            // ⚡️ 이동 방향 계산 및 좌우 반전 (문워크 수정)
+            // 이동 방향 계산
             Vector2 targetDirection = (playerTarget.position - transform.position).normalized;
             moveDirection = targetDirection;
 
+            // 좌우 반전 로직 (문워크 수정)
             float targetScaleX = Mathf.Abs(transform.localScale.x);
 
             if (moveDirection.x > 0.01f)
@@ -138,6 +139,4 @@ public class SkeletonController : EnemyController
             }
         }
     }
-
-   
 }

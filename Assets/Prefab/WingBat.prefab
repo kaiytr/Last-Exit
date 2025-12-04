@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 6449663696124608921}
   - component: {fileID: 2947325701866869889}
   - component: {fileID: 7928238833855079974}
-  - component: {fileID: 3767015634889053786}
   - component: {fileID: 8487845086533819637}
   - component: {fileID: 555672614914029813}
   m_Layer: 0
@@ -150,20 +149,6 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0.034637094, y: -0.013607413}
   m_Radius: 0.1723012
---- !u!114 &3767015634889053786
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8475273426231304661}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7ae0b983c50fd5646959729d58760dba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  detectionRange: 10
-  maxHealth: 20
 --- !u!114 &8487845086533819637
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -176,9 +161,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ae93772489888d44a177d1b5135f091, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detectionRange: 10
   maxHealth: 10
-  WingbatMaxHealth: 20
+  detectionRange: 10
+  moveSpeed: 3
+  WingBatMaxHealth: 25
   attackCooldown: 5
 --- !u!50 &555672614914029813
 Rigidbody2D:
@@ -188,7 +174,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8475273426231304661}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -206,4 +192,4 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
