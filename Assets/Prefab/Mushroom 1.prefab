@@ -126,8 +126,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24898512506aa384096e0d1523efa01c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detectionRange: 10
   maxHealth: 10
+  detectionRange: 10
+  moveSpeed: 3
   MushroomMaxHealth: 30
   attackCooldown: 3
 --- !u!114 &3672954074741774232
@@ -142,8 +143,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ae0b983c50fd5646959729d58760dba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detectionRange: 10
   maxHealth: 10
+  detectionRange: 10
+  moveSpeed: 3
 --- !u!50 &-992457652893144777
 Rigidbody2D:
   serializedVersion: 5
@@ -152,7 +154,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6872378727500779260}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0

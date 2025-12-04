@@ -162,8 +162,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ae0b983c50fd5646959729d58760dba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detectionRange: 10
   maxHealth: 20
+  detectionRange: 10
+  moveSpeed: 3
 --- !u!114 &8487845086533819637
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -176,9 +177,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ae93772489888d44a177d1b5135f091, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detectionRange: 10
   maxHealth: 10
-  WingbatMaxHealth: 20
+  detectionRange: 10
+  moveSpeed: 3
+  WingBatMaxHealth: 25
   attackCooldown: 5
 --- !u!50 &555672614914029813
 Rigidbody2D:
@@ -188,7 +190,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8475273426231304661}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0

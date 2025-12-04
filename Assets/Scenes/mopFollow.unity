@@ -977,6 +977,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 8475273426231304661, guid: 541779b225c87c843b4b20d27b117b19, type: 3}
+      propertyPath: m_TagString
+      value: WingBat
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3767015634889053786, guid: 541779b225c87c843b4b20d27b117b19, type: 3}
     m_RemovedGameObjects: []

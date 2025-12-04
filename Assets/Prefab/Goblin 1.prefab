@@ -122,7 +122,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3192961368580718541}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -153,8 +153,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ae0b983c50fd5646959729d58760dba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detectionRange: 10
   maxHealth: 40
+  detectionRange: 10
+  moveSpeed: 3
 --- !u!70 &9107381121157531598
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -204,6 +205,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db8fdd048b421814c99040c8e7984c88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detectionRange: 10
   maxHealth: 10
+  detectionRange: 10
+  moveSpeed: 3
+  GoblinMaxHealth: 40
   attackCooldown: 3
