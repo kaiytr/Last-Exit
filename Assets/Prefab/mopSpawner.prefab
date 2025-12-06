@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5891942030969049363
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1715873385430725726}
+  - component: {fileID: 3459857495306305301}
+  m_Layer: 0
+  m_Name: mopSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: -5397416234189338067, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1715873385430725726
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5891942030969049363}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: 0.002013255, w: 0.999998}
+  m_LocalPosition: {x: 0, y: 4, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0.231}
+--- !u!114 &3459857495306305301
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5891942030969049363}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e25a0a1bf57762e4c960d029b6f9cacd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnInterval: 2
+  wingbatPrefab: {fileID: 8475273426231304661, guid: 541779b225c87c843b4b20d27b117b19, type: 3}
+  mushroomPrefab: {fileID: 6872378727500779260, guid: a15c0352d5b956c449727687de7669cf, type: 3}
+  goblinPrefab: {fileID: 3192961368580718541, guid: c98a3898e5810ba4287a833d4ec16e4a, type: 3}
+  skeletonPrefab: {fileID: 8252881230695721316, guid: d0b6adadc91fec847a856df4513b29ad, type: 3}
+  spawnPoint: {fileID: 1715873385430725726}

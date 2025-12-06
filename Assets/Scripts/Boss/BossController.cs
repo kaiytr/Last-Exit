@@ -1,25 +1,24 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
-public class GoblinController : EnemyController
+public class BossController : EnemyController
 {
-    // [Inspector에서 설정할 변수]
-    [Header("Goblin Settings")]
-    public int GoblinMaxHealth = 40;
-    public float attackCooldown = 2.0f;
-    public float moveSpeed = 3.0f;
-    public float detectionRange = 8.0f;
-    public float meleeAttackRange = 1.5f; // 근접 공격 범위
+    [Header("Boss Settings")]
+    public int BossMaxHealth = 300;
+    public float attackCooldown = 3.0f;
+    public float moveSpeed = 3.5f;
+    public float detectionRange = 10.0f;
+    public float meleeAttackRange = 2.0f;
+    public float selfDestructTime = 60.0f;
 
     private float nextAttackTime = 0f;
     private Animator animator;
 
-    private const int GOBLIN_ATTACK_DAMAGE = 12;
+    private const int BOSS_ATTACK_DAMAGE = 25;
 
-    // ⚡️ 기존 파라미터 이름 반영
     private const string PARAM_IS_RUNNING = "IsRunning";
-    private const string PARAM_ATTACK = "Attack"; // 기존 사용하던 Attack Trigger 이름 사용
-    private const string PARAM_DIE = "Die"; // 사망 파라미터 추가
+    private const string PARAM_ATTACK = "Attack";
+    private const string PARAM_DIE = "Die";
 
     private Vector2 moveDirection;
     private Rigidbody2D rb;
@@ -27,7 +26,8 @@ public class GoblinController : EnemyController
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        maxHealth = GoblinMaxHealth;
+
+        maxHealth = BossMaxHealth;
         base.Start();
         animator = GetComponent<Animator>();
         nextAttackTime = 0f;
@@ -39,8 +39,10 @@ public class GoblinController : EnemyController
 
         if (animator == null)
         {
-            Debug.LogError("Animator 컴포넌트가 Goblin 오브젝트에 없습니다!");
+            Debug.LogError("Animator 컴포넌트가 Boss 오브젝트에 없습니다!");
         }
+
+        StartCoroutine(SelfDestructTimer());
     }
 
     protected new void Update()
@@ -67,39 +69,32 @@ public class GoblinController : EnemyController
     {
         if (isDead || !isMoving)
         {
-            if (rb != null) rb.linearVelocity = Vector2.zero; // linearVelocity 대신 velocity 사용 권장
+            if (rb != null) rb.linearVelocity = Vector2.zero;
         }
         else
         {
-            if (rb != null) rb.linearVelocity = moveDirection * moveSpeed; // linearVelocity 대신 velocity 사용 권장
+            if (rb != null) rb.linearVelocity = moveDirection * moveSpeed;
         }
     }
 
     private void HandleEngage(float distance)
     {
-        // ⚡️ 애니메이션 상태 이름 확인: Animator에서 'Attack' Trigger가 실행했을 때의 상태 이름을 사용해야 합니다.
-        // 일반적으로 "Goblin_Attack" 또는 "Goblin_Melee"일 것입니다. Animator 상태 이름을 확인하세요.
-        bool isAttacking = animator.GetCurrentAnimatorStateInfo(0).IsName("Goblin_Attack");
+        bool isAttacking = animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_Attack");
 
-        // 1. 공격 로직 (공격 사거리 내 + 쿨타임 충족 + 현재 공격 중이 아님)
         if (distance <= meleeAttackRange && Time.time >= nextAttackTime && !isAttacking)
         {
-            // 공격 애니메이션을 실행하고 쿨타임을 재설정합니다.
             animator.SetTrigger(PARAM_ATTACK);
             nextAttackTime = Time.time + attackCooldown;
 
-            // 공격을 시작했으므로, 잠시 이동을 멈춥니다.
             HandleIdle();
-            return; // 공격 루틴이 시작되면 이동을 처리하지 않고 바로 함수 종료
+            return;
         }
 
-        // 2. 이동 로직 (공격 중이 아니거나 공격 사거리 밖일 때)
         if (!isAttacking && distance > meleeAttackRange)
         {
             Vector2 targetDirection = (playerTarget.position - transform.position).normalized;
             moveDirection = targetDirection;
 
-            // 좌우 반전 함수 호출
             FlipSprite(targetDirection.x);
 
             animator.SetBool(PARAM_IS_RUNNING, true);
@@ -107,22 +102,18 @@ public class GoblinController : EnemyController
         }
         else
         {
-            // 쿨타임 중이거나, 공격 중이거나, 사거리 내에서 대기
             HandleIdle();
         }
     }
 
-    // 좌우 반전 함수 분리 (WingBat에서 성공했던 로직 유지)
     private void FlipSprite(float directionX)
     {
         float targetScaleX = Mathf.Abs(transform.localScale.x);
 
-        // 왼쪽으로 이동해야 할 때 (플레이어가 왼쪽에 있음)
         if (directionX < -0.01f)
         {
             targetScaleX = -Mathf.Abs(transform.localScale.x);
         }
-        // 오른쪽으로 이동해야 할 때 (플레이어가 오른쪽에 있음)
         else if (directionX > 0.01f)
         {
             targetScaleX = Mathf.Abs(transform.localScale.x);
@@ -138,11 +129,11 @@ public class GoblinController : EnemyController
         moveDirection = Vector2.zero;
     }
 
-    public void AttackDamageEvent()
+    public void MeleeAttackEvent()
     {
         if (isDead) return;
 
-        float hitRadius = 1.0f;
+        float hitRadius = 2.0f;
         Collider2D[] hitObjects = Physics2D.OverlapCircleAll(transform.position, hitRadius);
 
         foreach (var hit in hitObjects)
@@ -153,21 +144,41 @@ public class GoblinController : EnemyController
 
                 if (playerHealth != null)
                 {
-                    playerHealth.TakeDamage(GOBLIN_ATTACK_DAMAGE);
+                    playerHealth.TakeDamage(BOSS_ATTACK_DAMAGE);
                     return;
                 }
             }
         }
     }
 
+    IEnumerator SelfDestructTimer()
+    {
+        yield return new WaitForSeconds(selfDestructTime);
+
+        if (!isDead)
+        {
+            Debug.Log("Boss: 60초 타이머 만료. 자동 파괴 시작.");
+            Die();
+        }
+    }
+
     protected override void Die()
     {
         if (isDead) return;
+
         base.Die();
 
         if (animator != null)
         {
             animator.SetTrigger(PARAM_DIE);
         }
+
+        StopAllCoroutines();
+    }
+
+    public void DestroyOnAnimationEnd()
+    {
+        Debug.Log("Boss: 사망 애니메이션 완료. 오브젝트 파괴.");
+        Destroy(gameObject);
     }
 }
