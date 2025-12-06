@@ -14,9 +14,9 @@ GameObject:
   - component: {fileID: 7928238833855079974}
   - component: {fileID: 8487845086533819637}
   - component: {fileID: 555672614914029813}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: WingBat
-  m_TagString: Wingbat
+  m_TagString: WingBat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -31,8 +31,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -2.98, y: -0.93, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -79,7 +79,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 6
   m_Sprite: {fileID: -4795363162621231457, guid: 6d7cd4f7505dc674c891ca8946cfd98b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -162,10 +162,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 10
-  detectionRange: 10
-  moveSpeed: 3
+  detectionRange: 20
+  moveSpeed: 5
   WingBatMaxHealth: 25
   attackCooldown: 5
+  moveSpeed: 3
+  detectionRange: 10
 --- !u!50 &555672614914029813
 Rigidbody2D:
   serializedVersion: 5

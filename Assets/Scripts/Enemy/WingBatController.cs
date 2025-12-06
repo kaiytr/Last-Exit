@@ -3,9 +3,10 @@ using System.Collections;
 
 public class WingBatController : EnemyController
 {
-    [Header("WingBat Settings")]
     public int WingBatMaxHealth = 25;
     public float attackCooldown = 3.0f;
+    public float moveSpeed = 4.0f;
+    public float detectionRange = 7.0f;
 
     private float nextAttackTime = 0f;
     private Animator animator;
@@ -13,7 +14,7 @@ public class WingBatController : EnemyController
     private const int WINGBAT_ATTACK_DAMAGE = 8;
     private const int ATTACK_INCREASE_AMOUNT = 2;
 
-    private const string PARAM_IS_FLYING = "IsFlying"; // WingBat�� IsRunning ��� IsFlying ���
+    private const string PARAM_IS_FLYING = "IsFlying";
     private const string PARAM_ATTACK = "Attack";
     private const string PARAM_DIE = "Die";
 
@@ -30,11 +31,11 @@ public class WingBatController : EnemyController
 
         if (animator == null)
         {
-            Debug.LogError("Animator ������Ʈ�� WingBat ������Ʈ�� �����ϴ�!");
+            Debug.LogError("Animator 컴포넌트가 WingBat 오브젝트에 없습니다!");
         }
     }
 
-    new void Update()
+    protected new void Update()
     {
         if (playerTarget == null || isDead)
         {
@@ -58,11 +59,11 @@ public class WingBatController : EnemyController
     {
         if (isDead || !isMoving)
         {
-            rb.linearVelocity = Vector2.zero;
+            if (rb != null) rb.linearVelocity = Vector2.zero;
         }
         else
         {
-            rb.linearVelocity = moveDirection * moveSpeed;
+            if (rb != null) rb.linearVelocity = moveDirection * moveSpeed;
         }
     }
 
@@ -78,21 +79,10 @@ public class WingBatController : EnemyController
 
         if (!isAttacking)
         {
-            // �̵� ���� ��� �� ����
             Vector2 targetDirection = (playerTarget.position - transform.position).normalized;
             moveDirection = targetDirection;
 
-            // �÷��̾� �ٶ󺸱� (�¿� ����)
-            float targetScaleX = Mathf.Abs(transform.localScale.x);
-            if (targetDirection.x < 0)
-            {
-                targetScaleX = Mathf.Abs(transform.localScale.x);
-            }
-            else if (targetDirection.x > 0)
-            {
-                targetScaleX = -Mathf.Abs(transform.localScale.x);
-            }
-            transform.localScale = new Vector3(targetScaleX, transform.localScale.y, transform.localScale.z);
+            FlipSprite(targetDirection.x);
 
             animator.SetBool(PARAM_IS_FLYING, true);
             isMoving = true;
@@ -103,6 +93,27 @@ public class WingBatController : EnemyController
             isMoving = false;
             moveDirection = Vector2.zero;
         }
+    }
+
+    // 좌우 반전 로직 (스프라이트가 기본적으로 오른쪽을 바라본다고 가정하고 수정)
+    private void FlipSprite(float directionX)
+    {
+        float targetScaleX = Mathf.Abs(transform.localScale.x);
+
+        // 플레이어가 왼쪽에 있을 때 (왼쪽으로 이동해야 함)
+        if (directionX < -0.01f)
+        {
+            // 왼쪽을 바라보도록 반전 (스케일 X를 음수로 설정)
+            targetScaleX = -Mathf.Abs(transform.localScale.x);
+        }
+        // 플레이어가 오른쪽에 있을 때 (오른쪽으로 이동해야 함)
+        else if (directionX > 0.01f)
+        {
+            // 오른쪽을 바라보도록 반전 해제 (스케일 X를 양수로 설정)
+            targetScaleX = Mathf.Abs(transform.localScale.x);
+        }
+
+        transform.localScale = new Vector3(targetScaleX, transform.localScale.y, transform.localScale.z);
     }
 
     private void HandleIdle()
@@ -134,5 +145,14 @@ public class WingBatController : EnemyController
         }
     }
 
-   
+    protected override void Die()
+    {
+        if (isDead) return;
+        base.Die();
+
+        if (animator != null)
+        {
+            animator.SetTrigger(PARAM_DIE);
+        }
+    }
 }

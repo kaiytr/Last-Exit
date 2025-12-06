@@ -29,7 +29,7 @@ public class EnemyController : MonoBehaviour
     {
     }
 
-    public void TakeDamage(int damage)
+    public virtual void TakeDamage(int damage)
     {
         if (isDead) return;
 
@@ -43,7 +43,7 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    protected void Die()
+    protected virtual void Die()
     {
         if (isDead) return;
 
@@ -78,13 +78,13 @@ public class EnemyController : MonoBehaviour
         switch (tag)
         {
             case "WingBat": // WingBat 태그를 가진 적을 잡았을 때
-                return 2;
+                return 1;
             case "Mushroom": // Mushroom 태그를 가진 적을 잡았을 때
-                return 3;
+                return 1;
             case "Goblin": // Goblin 태그를 가진 적을 잡았을 때
-                return 4;
+                return 1;
             case "Skeleton": // Skeleton 태그를 가진 적을 잡았을 때
-                return 5;
+                return 2;
             default:
                 Debug.LogWarning($"EnemyController: 알 수 없는 태그 '{tag}'입니다. 기본값 0을 적용합니다.");
                 return 0;

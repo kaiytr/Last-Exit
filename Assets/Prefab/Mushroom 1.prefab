@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7625133460810026871}
   - component: {fileID: -992457652893144777}
   - component: {fileID: 3580319603263343807}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Mushroom 1
   m_TagString: Mushroom
   m_Icon: {fileID: 0}
@@ -31,8 +31,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -2.036, y: -0.893, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 2.38, y: 2.38, z: 2.38}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -79,7 +79,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 6
   m_Sprite: {fileID: 4723107735738678597, guid: f8b30c2afe165d645b54d500a9c30862, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -126,10 +126,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 10
-  detectionRange: 10
-  moveSpeed: 3
+  detectionRange: 20
+  moveSpeed: 5
   MushroomMaxHealth: 30
   attackCooldown: 3
+  moveSpeed: 3
+  detectionRange: 10
+  meleeAttackRange: 1
 --- !u!50 &-992457652893144777
 Rigidbody2D:
   serializedVersion: 5
